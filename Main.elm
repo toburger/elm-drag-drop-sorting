@@ -65,7 +65,16 @@ update msg model =
                                 model.items
 
                             Just ( currPos, newPos ) ->
-                                Utils.sliceInto (currPos // 2) (newPos // 2) model.items
+                                Utils.transplant (currPos // 2)
+                                    (newPos
+                                        // 2
+                                        - (if currPos <= newPos then
+                                            1
+                                           else
+                                            0
+                                          )
+                                    )
+                                    model.items
                  }
                 )
 
@@ -165,7 +174,7 @@ view model =
         viewContainer
             (model.items
                 |> List.map Draggable
-                |> Utils.intersperseInverted Droppable
+                |> Utils.exospersed Droppable
                 |> List.indexedMap
                     (\dragId_ elem ->
                         case elem of
